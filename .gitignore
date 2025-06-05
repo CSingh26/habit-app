@@ -18,6 +18,13 @@ expo-env.d.ts
 *.key
 *.mobileprovision
 
+# Frontend
+frontend/node_modules/
+frontend/ios/
+frontend/android/
+frontend/web-build/
+frontend/expo-env.d.ts
+
 # Metro
 .metro-health-check*
 
