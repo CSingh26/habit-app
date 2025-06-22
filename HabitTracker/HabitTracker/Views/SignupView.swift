@@ -7,6 +7,8 @@ struct SignupView: View {
     @State private var password = ""
     @State private var confirmPassword = ""
     @State private var errorMessage = ""
+    @State private var isPasswordVisible = false
+    @State private var isConfirmPasswordVisible = false
 
     var body: some View {
         VStack(spacing: 24) {
@@ -33,15 +35,47 @@ struct SignupView: View {
                 .background(Color(.systemGray6))
                 .cornerRadius(10)
 
-            SecureField("Password", text: $password)
+            ZStack(alignment: .trailing) {
+                Group {
+                    if isPasswordVisible {
+                        TextField("Password", text: $password)
+                    } else {
+                        SecureField("Password", text: $password)
+                    }
+                }
                 .padding()
                 .background(Color(.systemGray6))
                 .cornerRadius(10)
 
-            SecureField("Confirm Password", text: $confirmPassword)
+                Button(action: {
+                    isPasswordVisible.toggle()
+                }) {
+                    Image(systemName: isPasswordVisible ? "eye.slash" : "eye")
+                        .foregroundColor(.gray)
+                        .padding()
+                }
+            }
+
+            ZStack(alignment: .trailing) {
+                Group {
+                    if isConfirmPasswordVisible {
+                        TextField("Confirm Password", text: $confirmPassword)
+                    } else {
+                        SecureField("Confirm Password", text: $confirmPassword)
+                    }
+                }
                 .padding()
                 .background(Color(.systemGray6))
                 .cornerRadius(10)
+
+                Button(action: {
+                    isConfirmPasswordVisible.toggle()
+                }) {
+                    Image(systemName: isConfirmPasswordVisible ? "eye.slash" : "eye")
+                        .foregroundColor(.gray)
+                        .padding()
+                }
+            }
 
             if !errorMessage.isEmpty {
                 Text(errorMessage)
@@ -72,9 +106,25 @@ struct SignupView: View {
             return
         }
 
-        // TODO: API Integration
-        print("Signup Info:", email, name, password, username)
-        errorMessage = ""
+        let user = UserSignup(
+            name: name,
+            username: username,
+            email: email,
+            password: password
+        )
+        
+        NetworkManager.shared.signup(user: user) {result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let message):
+                    errorMessage = ""
+                    print(message)
+                case .failure(let error):
+                    errorMessage = error.localizedDescription
+                
+                }
+            }
+        }
     }
 }
 
