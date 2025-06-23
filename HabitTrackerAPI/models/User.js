@@ -7,7 +7,7 @@ const userSchema = new mongoose.Schema({
     },
     username: {
         type: String,
-        required: true,
+        sparse: true,
         unique: true,
     },
     email: {
@@ -17,7 +17,17 @@ const userSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        required: true,
+        required: function () {
+            return this.provider === 'local'
+        },
+    },
+    provider: {
+        type: String,
+        enum: ['local', 'google', 'apple'],
+        default: 'local',
+    },
+    socialId: {
+        type: String, 
     }
 }, {
     timestamps: true,

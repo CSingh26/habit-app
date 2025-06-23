@@ -1,4 +1,6 @@
 import SwiftUI
+import GoogleSignIn
+import GoogleSignInSwift
 
 struct LoginView: View {
     @State private var username = ""
