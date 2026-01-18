@@ -1,14 +1,14 @@
 import { z } from 'zod';
 
 import { db } from '@/db/client';
-import { HabitSchema, type Habit, type HabitSchedule } from '@/domain';
+import { HabitScheduleSchema, HabitSchema, type Habit, type HabitSchedule } from '@/domain';
 import { safeParseJson, createId, now } from '@/utils';
 
 const CreateHabitInputSchema = z.object({
   name: z.string().min(1),
   icon: z.string().min(1),
   color: z.string().min(1),
-  schedule: z.custom<HabitSchedule>(),
+  schedule: HabitScheduleSchema,
   target: z.number().int().min(1),
   reminderTime: z.string().nullable().optional(),
 });

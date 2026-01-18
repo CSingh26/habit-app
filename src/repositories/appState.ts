@@ -45,3 +45,7 @@ export async function setAppState(key: string, value: string) {
 
   return { key, value, updatedAt };
 }
+
+export async function removeAppState(key: string) {
+  await db.runAsync('DELETE FROM app_state WHERE key = ?;', [key]);
+}
