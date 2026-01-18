@@ -108,11 +108,16 @@ export default function TodayScreen() {
       <View style={styles.section}>
         <AppText variant="subtitle">Quick actions</AppText>
         <View style={styles.actionRow}>
-          {['Log check-in', 'New habit'].map((label) => (
+          {[
+            { label: 'Log check-in', route: '/habits' },
+            { label: 'New habit', route: '/habits/new' },
+            { label: 'Challenges', route: '/challenges' },
+          ].map((item) => (
             <Pressable
-              key={label}
+              key={item.label}
               onPress={async () => {
                 await Haptics.selectionAsync();
+                router.push(item.route);
               }}
               style={({ pressed }) => [
                 styles.actionPill,
@@ -123,7 +128,7 @@ export default function TodayScreen() {
                 },
               ]}
             >
-              <AppText variant="caption">{label}</AppText>
+              <AppText variant="caption">{item.label}</AppText>
             </Pressable>
           ))}
         </View>

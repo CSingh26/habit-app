@@ -71,6 +71,24 @@ export async function getChallenges() {
   return rows.map(mapChallenge);
 }
 
+export async function getChallengeById(id: string) {
+  const row = await db.getFirstAsync<ChallengeRow>(
+    `SELECT id, name, code, start_date, end_date, target_streak, habit_ids, created_at, updated_at
+     FROM challenges WHERE id = ? LIMIT 1;`,
+    [id],
+  );
+  return row ? mapChallenge(row) : null;
+}
+
+export async function getChallengeByCode(code: string) {
+  const row = await db.getFirstAsync<ChallengeRow>(
+    `SELECT id, name, code, start_date, end_date, target_streak, habit_ids, created_at, updated_at
+     FROM challenges WHERE code = ? LIMIT 1;`,
+    [code],
+  );
+  return row ? mapChallenge(row) : null;
+}
+
 export async function createChallenge(input: CreateChallengeInput) {
   const parsed = CreateChallengeSchema.parse(input);
   const id = createId('challenge');
