@@ -1,0 +1,47 @@
+export const palette = {
+  ink: '#0F172A',
+  midnight: '#070B14',
+  slate: '#1B2435',
+  graphite: '#2E3A4F',
+  mist: '#E6ECF3',
+  cloud: '#F7F9FC',
+  moon: '#C7D3E2',
+  amber: '#F6C36A',
+  coral: '#FF8B7A',
+  mint: '#4FD1B5',
+  sky: '#5AA6FF',
+  violet: '#7B6CFF',
+  glow: '#FFE7B8',
+};
+
+export const lightColors = {
+  background: '#F5F7FB',
+  surface: '#FFFFFF',
+  surfaceElevated: '#FFFFFF',
+  text: palette.ink,
+  textMuted: '#5B6A82',
+  border: '#E5EAF2',
+  accent: palette.violet,
+  accentSoft: '#E8E2FF',
+  success: palette.mint,
+  warning: palette.amber,
+  danger: palette.coral,
+  overlay: 'rgba(10, 15, 25, 0.35)',
+  shimmer: '#EEF3FA',
+};
+
+export const darkColors = {
+  background: palette.midnight,
+  surface: '#141B2A',
+  surfaceElevated: '#1B2336',
+  text: '#F3F6FB',
+  textMuted: '#B0BDD3',
+  border: '#263147',
+  accent: '#9B8CFF',
+  accentSoft: '#2B2549',
+  success: '#5AD8BE',
+  warning: '#FFC772',
+  danger: '#FF8E83',
+  overlay: 'rgba(10, 12, 18, 0.6)',
+  shimmer: '#1A2233',
+};
