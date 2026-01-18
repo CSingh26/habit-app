@@ -3,7 +3,9 @@ import { StyleSheet, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { Feather } from '@expo/vector-icons';
 
-import { AppText, Card, PressableScale } from '@/components';
+import { AppText } from '@/components/AppText';
+import { Card } from '@/components/Card';
+import { PressableScale } from '@/components/PressableScale';
 import type { JournalEntry } from '@/domain';
 import { useTheme } from '@/theme';
 

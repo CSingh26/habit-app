@@ -20,6 +20,24 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
         border: theme.colors.border,
         notification: theme.colors.accent,
       },
+      fonts: {
+        regular: {
+          fontFamily: theme.typography.fontFamilies.body,
+          fontWeight: '400',
+        },
+        medium: {
+          fontFamily: theme.typography.fontFamilies.bodyMedium,
+          fontWeight: '500',
+        },
+        bold: {
+          fontFamily: theme.typography.fontFamilies.bodySemiBold,
+          fontWeight: '600',
+        },
+        heavy: {
+          fontFamily: theme.typography.fontFamilies.display,
+          fontWeight: '700',
+        },
+      },
     }),
     [scheme, theme],
   );

@@ -4,7 +4,9 @@ import { Swipeable } from 'react-native-gesture-handler';
 import { Feather } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 
-import { AppText, Card, PressableScale } from '@/components';
+import { AppText } from '@/components/AppText';
+import { Card } from '@/components/Card';
+import { PressableScale } from '@/components/PressableScale';
 import { useTheme } from '@/theme';
 import type { Habit } from '@/domain';
 import { formatSchedule } from '@/utils';
