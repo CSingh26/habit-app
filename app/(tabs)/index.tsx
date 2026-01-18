@@ -1,16 +1,25 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useFocusEffect } from '@react-navigation/native';
 import * as Haptics from 'expo-haptics';
+import Animated, { FadeInUp } from 'react-native-reanimated';
+import { useRouter } from 'expo-router';
 
-import { AppText, Card, LevelMeter, Screen } from '@/components';
+import { AppText, Card, LevelMeter, PetStageView, ProgressRing, Screen } from '@/components';
+import type { Habit } from '@/domain';
+import { getHabits } from '@/repositories';
+import { getCheckinsForDateRange } from '@/repositories/checkins';
 import { getLevelSnapshot } from '@/services/gamification';
 import { useTheme } from '@/theme';
+import { toDateKey } from '@/utils';
 
 export default function TodayScreen() {
   const theme = useTheme();
+  const router = useRouter();
   const [level, setLevel] = useState({ level: 1, progress: 0, currentXp: 0, nextLevelXp: 120 });
+  const [habits, setHabits] = useState<Habit[]>([]);
+  const [completionRate, setCompletionRate] = useState(0);
   const today = new Date().toLocaleDateString('en-US', {
     weekday: 'long',
     month: 'short',
@@ -20,8 +29,22 @@ export default function TodayScreen() {
   useFocusEffect(
     useCallback(() => {
       getLevelSnapshot().then(setLevel);
+      getHabits().then(async (list) => {
+        setHabits(list);
+        if (list.length === 0) {
+          setCompletionRate(0);
+          return;
+        }
+        const todayKey = toDateKey(new Date());
+        const checkins = await getCheckinsForDateRange(todayKey, todayKey);
+        const map = new Map(checkins.map((checkin) => [checkin.habitId, checkin.count]));
+        const completed = list.filter((habit) => (map.get(habit.id) ?? 0) >= habit.target).length;
+        setCompletionRate(completed / list.length);
+      });
     }, []),
   );
+
+  const completionPercent = useMemo(() => Math.round(completionRate * 100), [completionRate]);
 
   return (
     <Screen>
@@ -32,29 +55,55 @@ export default function TodayScreen() {
         </AppText>
       </View>
 
-      <LinearGradient
-        colors={[theme.colors.accent, theme.colors.accentSoft]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={[styles.hero, { borderColor: theme.colors.border }]}
-      >
-        <View>
-          <AppText variant="subtitle" color="#0B0F18">
-            Momentum
-          </AppText>
-          <AppText variant="title" color="#0B0F18">
-            3 habits ready
-          </AppText>
-        </View>
-        <View style={styles.heroMeta}>
-          <AppText variant="caption" color="#0B0F18">
-            68% complete
-          </AppText>
-          <View style={[styles.progressTrack, { backgroundColor: '#EDE7FF' }]}>
-            <View style={styles.progressFill} />
+      <Animated.View entering={FadeInUp.duration(500)}>
+        <LinearGradient
+          colors={[theme.colors.accent, theme.colors.accentSoft]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={[styles.hero, { borderColor: theme.colors.border }]}
+        >
+          <View style={styles.heroTop}>
+            <View>
+              <AppText variant="subtitle" color="#0B0F18">
+                Momentum
+              </AppText>
+              <AppText variant="title" color="#0B0F18">
+                {habits.length} habits ready
+              </AppText>
+            </View>
+            <View style={styles.ring}>
+              <ProgressRing size={68} progress={completionRate} />
+              <View style={styles.ringLabel}>
+                <AppText variant="caption" color="#0B0F18">
+                  {completionPercent}%
+                </AppText>
+              </View>
+            </View>
           </View>
-        </View>
-      </LinearGradient>
+          <View style={styles.heroMeta}>
+            <AppText variant="caption" color="#0B0F18">
+              {completionPercent}% complete
+            </AppText>
+            <View style={[styles.progressTrack, { backgroundColor: '#EDE7FF' }]}>
+              <View style={[styles.progressFill, { width: `${completionPercent}%` }]} />
+            </View>
+          </View>
+          <Pressable
+            onPress={() => router.push('/companion')}
+            style={styles.petPreview}
+          >
+            <PetStageView level={level.level} size={90} />
+            <View>
+              <AppText variant="caption" color="#0B0F18">
+                Companion stage
+              </AppText>
+              <AppText variant="subtitle" color="#0B0F18">
+                {level.level >= 5 ? 'Bloom' : level.level >= 3 ? 'Sprout' : 'Seed'}
+              </AppText>
+            </View>
+          </Pressable>
+        </LinearGradient>
+      </Animated.View>
 
       <View style={styles.section}>
         <AppText variant="subtitle">Quick actions</AppText>
@@ -122,6 +171,21 @@ const styles = StyleSheet.create({
     gap: 18,
     borderWidth: 1,
   },
+  heroTop: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  ring: {
+    width: 68,
+    height: 68,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  ringLabel: {
+    position: 'absolute',
+    alignItems: 'center',
+  },
   heroMeta: {
     gap: 10,
   },
@@ -132,8 +196,12 @@ const styles = StyleSheet.create({
   },
   progressFill: {
     height: '100%',
-    width: '68%',
     backgroundColor: '#0B0F18',
+  },
+  petPreview: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
   },
   section: {
     marginTop: 28,

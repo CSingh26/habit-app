@@ -4,6 +4,8 @@ export { Card } from './Card';
 export { HeatmapCalendar } from './HeatmapCalendar';
 export { LevelMeter } from './LevelMeter';
 export { PressableScale } from './PressableScale';
+export { ProgressRing } from './ProgressRing';
 export { Screen } from './Screen';
 export * from './habits';
 export * from './journal';
+export * from './pet';
