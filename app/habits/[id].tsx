@@ -5,10 +5,11 @@ import { useFocusEffect } from '@react-navigation/native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 
-import { AppText, Card, PressableScale, Screen } from '@/components';
+import { AchievementToast, AppText, Card, PressableScale, Screen } from '@/components';
 import type { Habit } from '@/domain';
 import { getHabitById } from '@/repositories';
 import { getCheckinsForHabit, upsertCheckin } from '@/repositories/checkins';
+import { handleCheckinComplete } from '@/services/gamification';
 import { useTheme } from '@/theme';
 import { formatSchedule, toDateKey } from '@/utils';
 
@@ -18,6 +19,11 @@ export default function HabitDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const [habit, setHabit] = useState<Habit | null>(null);
   const [checkinsCount, setCheckinsCount] = useState(0);
+  const [toastAchievement, setToastAchievement] = useState<null | {
+    id: string;
+    title: string;
+    description: string;
+  }>(null);
 
   const load = useCallback(async () => {
     if (!id) {
@@ -78,6 +84,10 @@ export default function HabitDetailScreen() {
             const dateKey = toDateKey(new Date());
             await upsertCheckin(habit.id, dateKey, habit.target);
             await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+            const result = await handleCheckinComplete(habit);
+            if (result.achievements[0]) {
+              setToastAchievement(result.achievements[0]);
+            }
             load();
           }}
           style={[styles.primaryButton, { backgroundColor: theme.colors.accent }]}
@@ -93,6 +103,11 @@ export default function HabitDetailScreen() {
           <AppText variant="subtitle">Edit habit</AppText>
         </PressableScale>
       </View>
+
+      <AchievementToast
+        achievement={toastAchievement}
+        onDone={() => setToastAchievement(null)}
+      />
     </Screen>
   );
 }

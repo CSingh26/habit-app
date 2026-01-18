@@ -5,10 +5,11 @@ import { useFocusEffect } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 
-import { AppText, PressableScale, Screen, HabitCard } from '@/components';
+import { AchievementToast, AppText, PressableScale, Screen, HabitCard } from '@/components';
 import type { Habit } from '@/domain';
 import { getHabits, removeHabit } from '@/repositories';
 import { upsertCheckin } from '@/repositories/checkins';
+import { handleCheckinComplete } from '@/services/gamification';
 import { useTheme } from '@/theme';
 import { toDateKey } from '@/utils';
 
@@ -17,6 +18,11 @@ export default function HabitsScreen() {
   const router = useRouter();
   const [habits, setHabits] = useState<Habit[]>([]);
   const [loading, setLoading] = useState(true);
+  const [toastAchievement, setToastAchievement] = useState<null | {
+    id: string;
+    title: string;
+    description: string;
+  }>(null);
 
   const loadHabits = useCallback(async () => {
     setLoading(true);
@@ -77,12 +83,21 @@ export default function HabitsScreen() {
                   const dateKey = toDateKey(new Date());
                   await upsertCheckin(item.id, dateKey, item.target);
                   await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+                  const result = await handleCheckinComplete(item);
+                  if (result.achievements[0]) {
+                    setToastAchievement(result.achievements[0]);
+                  }
                 }}
               />
             )}
           />
         )}
       </View>
+
+      <AchievementToast
+        achievement={toastAchievement}
+        onDone={() => setToastAchievement(null)}
+      />
 
       <PressableScale
         onPress={() => router.push('/habits/new')}

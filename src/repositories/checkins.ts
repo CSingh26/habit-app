@@ -41,6 +41,13 @@ export async function getCheckinsForDateRange(startDateKey: string, endDateKey: 
   return rows.map(mapCheckin);
 }
 
+export async function getAllCheckins() {
+  const rows = await db.getAllAsync<CheckinRow>(
+    'SELECT id, habit_id, date_key, count, created_at, updated_at FROM checkins ORDER BY date_key DESC;',
+  );
+  return rows.map(mapCheckin);
+}
+
 export async function upsertCheckin(habitId: string, dateKey: string, count: number) {
   const existing = await db.getFirstAsync<CheckinRow>(
     'SELECT id, habit_id, date_key, count, created_at, updated_at FROM checkins WHERE habit_id = ? AND date_key = ?;',

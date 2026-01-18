@@ -5,11 +5,12 @@ import { FlashList } from '@shopify/flash-list';
 import Slider from '@react-native-community/slider';
 import * as Haptics from 'expo-haptics';
 
-import { AppText, Card, JournalEntryCard, PressableScale, Screen } from '@/components';
+import { AchievementToast, AppText, Card, JournalEntryCard, PressableScale, Screen } from '@/components';
 import type { Habit, JournalEntry } from '@/domain';
 import { getHabits } from '@/repositories';
 import { getCheckinsForDateRange } from '@/repositories/checkins';
 import { getJournalEntries, getJournalEntry, upsertJournalEntry } from '@/repositories/journal';
+import { handleJournalSaved } from '@/services/gamification';
 import { useTheme } from '@/theme';
 import { addDays, toDateKey } from '@/utils';
 
@@ -22,6 +23,11 @@ export default function JournalScreen() {
   const [notes, setNotes] = useState('');
   const [linkedHabits, setLinkedHabits] = useState<string[]>([]);
   const [checkins, setCheckins] = useState<Map<string, number>>(new Map());
+  const [toastAchievement, setToastAchievement] = useState<null | {
+    id: string;
+    title: string;
+    description: string;
+  }>(null);
 
   const load = useCallback(async () => {
     const habitsList = await getHabits();
@@ -160,6 +166,10 @@ export default function JournalScreen() {
                 tags: [],
               });
               await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+              const achievements = await handleJournalSaved();
+              if (achievements[0]) {
+                setToastAchievement(achievements[0]);
+              }
               load();
             }}
             style={[styles.saveButton, { backgroundColor: theme.colors.accent }]}
@@ -204,6 +214,11 @@ export default function JournalScreen() {
           )}
         />
       </View>
+
+      <AchievementToast
+        achievement={toastAchievement}
+        onDone={() => setToastAchievement(null)}
+      />
     </Screen>
   );
 }

@@ -1,18 +1,27 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useFocusEffect } from '@react-navigation/native';
 import * as Haptics from 'expo-haptics';
 
-import { AppText, Card, Screen } from '@/components';
+import { AppText, Card, LevelMeter, Screen } from '@/components';
+import { getLevelSnapshot } from '@/services/gamification';
 import { useTheme } from '@/theme';
 
 export default function TodayScreen() {
   const theme = useTheme();
+  const [level, setLevel] = useState({ level: 1, progress: 0, currentXp: 0, nextLevelXp: 120 });
   const today = new Date().toLocaleDateString('en-US', {
     weekday: 'long',
     month: 'short',
     day: 'numeric',
   });
+
+  useFocusEffect(
+    useCallback(() => {
+      getLevelSnapshot().then(setLevel);
+    }, []),
+  );
 
   return (
     <Screen>
@@ -86,6 +95,17 @@ export default function TodayScreen() {
             </Card>
           ))}
         </View>
+      </View>
+
+      <View style={styles.section}>
+        <Card>
+          <LevelMeter
+            level={level.level}
+            progress={level.progress}
+            xp={level.currentXp}
+            nextLevelXp={level.nextLevelXp}
+          />
+        </Card>
       </View>
     </Screen>
   );
