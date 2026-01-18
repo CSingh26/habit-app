@@ -11,7 +11,6 @@ export default function TabsLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarShowLabel: false,
         tabBarActiveTintColor: theme.colors.accent,
         tabBarInactiveTintColor: theme.colors.textMuted,
         tabBarStyle: {
@@ -19,6 +18,9 @@ export default function TabsLayout() {
           borderTopColor: theme.colors.border,
           height: 64,
           paddingTop: 6,
+        },
+        tabBarLabelStyle: {
+          display: 'none',
         },
       }}
     >
