@@ -1,6 +1,6 @@
 import 'react-native-gesture-handler';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
@@ -13,6 +13,7 @@ import {
 } from '@expo-google-fonts/space-grotesk';
 import { DMSerifDisplay_400Regular } from '@expo-google-fonts/dm-serif-display';
 
+import { initializeDatabase } from '@/db';
 import { AppProviders, useTheme } from '@/theme';
 
 SplashScreen.preventAutoHideAsync();
@@ -43,14 +44,29 @@ export default function RootLayout() {
     SpaceGrotesk_600SemiBold,
     DMSerifDisplay_400Regular,
   });
+  const [dbReady, setDbReady] = useState(false);
 
   useEffect(() => {
+    let mounted = true;
+
     if (loaded) {
-      SplashScreen.hideAsync();
+      initializeDatabase()
+        .then(() => {
+          if (mounted) {
+            setDbReady(true);
+          }
+        })
+        .finally(() => {
+          SplashScreen.hideAsync();
+        });
     }
+
+    return () => {
+      mounted = false;
+    };
   }, [loaded]);
 
-  if (!loaded) {
+  if (!loaded || !dbReady) {
     return null;
   }
 
