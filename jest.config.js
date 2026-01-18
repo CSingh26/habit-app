@@ -5,6 +5,6 @@ module.exports = {
     '^@/(.*)$': '<rootDir>/src/$1',
   },
   transformIgnorePatterns: [
-    'node_modules/(?!((jest-)?react-native|@react-native|expo|@expo|expo-router|react-native-svg|@shopify/flash-list)/)',
+    'node_modules/(?!((jest-)?react-native|@react-native|expo|expo-modules-core|@expo|expo-router|react-native-svg|@shopify/flash-list|react-native-worklets)/)',
   ],
 };

@@ -1,1 +1,1 @@
-// Keep test setup minimal for unit-focused tests.
+jest.mock('react-native-reanimated', () => require('react-native-reanimated/mock'));

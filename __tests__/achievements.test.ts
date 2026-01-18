@@ -1,4 +1,4 @@
-import { getEligibleAchievements } from '@/services/achievements';
+import { getEligibleAchievements } from '@/services/achievementLogic';
 
 describe('getEligibleAchievements', () => {
   it('returns newly unlocked achievements', () => {
