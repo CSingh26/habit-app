@@ -14,24 +14,17 @@ import {
 import { DMSerifDisplay_400Regular } from '@expo-google-fonts/dm-serif-display';
 
 import { initializeDatabase } from '@/db';
-import { AppProviders, useTheme } from '@/theme';
+import { AppProviders } from '@/theme';
 
 SplashScreen.preventAutoHideAsync();
 
 function RootNavigator() {
-  const theme = useTheme();
-
   return (
     <>
       <StatusBar style="auto" />
-      <Stack
-        screenOptions={{
-          headerShown: false,
-          contentStyle: { backgroundColor: theme.colors.background },
-        }}
-      >
+      <Stack>
         <Stack.Screen name="(tabs)" />
-        <Stack.Screen name="onboarding/index" options={{ presentation: 'fullScreenModal' }} />
+        <Stack.Screen name="onboarding/index" />
       </Stack>
     </>
   );

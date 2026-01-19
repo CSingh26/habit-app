@@ -48,7 +48,7 @@ export function ProgressRing({ size, strokeWidth = 8, progress }: ProgressRingPr
         stroke={theme.colors.accent}
         strokeWidth={strokeWidth}
         strokeLinecap="round"
-        strokeDasharray={`${circumference} ${circumference}`}
+        strokeDasharray={[circumference, circumference]}
         animatedProps={animatedProps}
         fill="none"
       />

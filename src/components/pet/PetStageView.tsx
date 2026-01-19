@@ -44,20 +44,20 @@ export function PetStageView({ size = 180, level }: PetStageViewProps) {
   return (
     <Animated.View style={[styles.container, animatedStyle]}>
       <Svg width={size} height={size} viewBox="0 0 180 180">
-        <Rect x="55" y="120" width="70" height="40" rx="16" fill={colors.pot} stroke={colors.potBorder} strokeWidth="2" />
-        <Path d="M65 120 L115 120 L110 150 L70 150 Z" fill={colors.pot} stroke={colors.potBorder} strokeWidth="2" />
-        {stage === 'seed' && <Circle cx="90" cy="112" r="8" fill={colors.stem} />}
+        <Rect x={55} y={120} width={70} height={40} rx={16} fill={colors.pot} stroke={colors.potBorder} strokeWidth={2} />
+        <Path d="M65 120 L115 120 L110 150 L70 150 Z" fill={colors.pot} stroke={colors.potBorder} strokeWidth={2} />
+        {stage === 'seed' && <Circle cx={90} cy={112} r={8} fill={colors.stem} />}
         {stage !== 'seed' && (
           <>
-            <Rect x="88" y="80" width="4" height="40" rx="2" fill={colors.stem} />
-            <Path d="M90 90 C70 90, 70 70, 90 70" fill="none" stroke={colors.leaf} strokeWidth="6" strokeLinecap="round" />
-            <Path d="M90 100 C110 100, 112 80, 92 78" fill="none" stroke={colors.leaf} strokeWidth="6" strokeLinecap="round" />
+            <Rect x={88} y={80} width={4} height={40} rx={2} fill={colors.stem} />
+            <Path d="M90 90 C70 90, 70 70, 90 70" fill="none" stroke={colors.leaf} strokeWidth={6} strokeLinecap="round" />
+            <Path d="M90 100 C110 100, 112 80, 92 78" fill="none" stroke={colors.leaf} strokeWidth={6} strokeLinecap="round" />
           </>
         )}
         {stage === 'bloom' && (
           <>
-            <Circle cx="90" cy="58" r="10" fill={colors.flower} />
-            <Path d="M80 58 C82 48, 98 48, 100 58" fill="none" stroke={colors.flower} strokeWidth="6" strokeLinecap="round" />
+            <Circle cx={90} cy={58} r={10} fill={colors.flower} />
+            <Path d="M80 58 C82 48, 98 48, 100 58" fill="none" stroke={colors.flower} strokeWidth={6} strokeLinecap="round" />
           </>
         )}
       </Svg>

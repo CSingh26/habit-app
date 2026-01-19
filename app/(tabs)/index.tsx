@@ -1,9 +1,9 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useFocusEffect } from '@react-navigation/native';
 import * as Haptics from 'expo-haptics';
-import Animated, { FadeInUp } from 'react-native-reanimated';
+import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { useRouter } from 'expo-router';
 
 import { AppText, Card, LevelMeter, PetStageView, ProgressRing, Screen } from '@/components';
@@ -20,6 +20,8 @@ export default function TodayScreen() {
   const [level, setLevel] = useState({ level: 1, progress: 0, currentXp: 0, nextLevelXp: 120 });
   const [habits, setHabits] = useState<Habit[]>([]);
   const [completionRate, setCompletionRate] = useState(0);
+  const heroOpacity = useSharedValue(0);
+  const heroTranslate = useSharedValue(14);
   const today = new Date().toLocaleDateString('en-US', {
     weekday: 'long',
     month: 'short',
@@ -44,7 +46,16 @@ export default function TodayScreen() {
     }, []),
   );
 
+  useEffect(() => {
+    heroOpacity.value = withTiming(1, { duration: 520 });
+    heroTranslate.value = withTiming(0, { duration: 520 });
+  }, [heroOpacity, heroTranslate]);
+
   const completionPercent = useMemo(() => Math.round(completionRate * 100), [completionRate]);
+  const heroStyle = useAnimatedStyle(() => ({
+    opacity: heroOpacity.value,
+    transform: [{ translateY: heroTranslate.value }],
+  }));
 
   return (
     <Screen>
@@ -55,7 +66,7 @@ export default function TodayScreen() {
         </AppText>
       </View>
 
-      <Animated.View entering={FadeInUp.duration(500)}>
+      <Animated.View style={heroStyle}>
         <LinearGradient
           colors={[theme.colors.accent, theme.colors.accentSoft]}
           start={{ x: 0, y: 0 }}
