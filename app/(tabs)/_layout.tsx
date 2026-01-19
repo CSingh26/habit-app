@@ -15,7 +15,7 @@ const tabs = [
   { label: 'Habits', icon: 'check-circle', route: '/habits' },
   { label: 'Journal', icon: 'book-open', route: '/journal' },
   { label: 'Insights', icon: 'activity', route: '/insights' },
-  { label: 'Companion', icon: 'leaf', route: '/companion' },
+  { label: 'Companion', icon: 'feather', route: '/companion' },
 ] as const;
 
 export default function TabsLayout() {

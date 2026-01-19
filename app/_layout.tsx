@@ -6,6 +6,7 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useFonts } from 'expo-font';
+import { enableScreens } from 'react-native-screens';
 import {
   SpaceGrotesk_400Regular,
   SpaceGrotesk_500Medium,
@@ -16,6 +17,7 @@ import { DMSerifDisplay_400Regular } from '@expo-google-fonts/dm-serif-display';
 import { initializeDatabase } from '@/db';
 import { AppProviders } from '@/theme';
 
+enableScreens(false);
 SplashScreen.preventAutoHideAsync();
 
 function RootNavigator() {
